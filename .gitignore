@@ -1,7 +1,6 @@
 frontend/node_modules
 infra/frontend/build
 .env
-.github/workflows
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
