@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilter
-from .persmissions import IsAdminAuthorOrReadOnly
+from .permissions import IsAdminAuthorOrReadOnly
 from recipes.models import Favorite, Ingredients, Recipe, ShoppingList, Tag
 from .serializers import (
     AvatarSerializer,
