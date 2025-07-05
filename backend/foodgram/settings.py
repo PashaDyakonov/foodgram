@@ -12,7 +12,6 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOST', 'localhost,127.0.0.1').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -22,6 +21,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'users.apps.UsersConfig',
+    'django.contrib.auth',
     'api.apps.ApiConfig',
     'recipes.apps.RecipesConfig',
 ]
@@ -100,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-RU'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
