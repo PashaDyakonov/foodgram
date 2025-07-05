@@ -21,7 +21,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version-file: '.python-version'
+        python-version: python:3.9-slim
 
     - name: Install dependencies
       run: |
