@@ -4,7 +4,7 @@ on: push
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
         image: postgres:13.10
@@ -21,7 +21,8 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: python:3.9.6
+        python-version: "3.9"
+        architecture: x64
 
     - name: Install dependencies
       run: |
