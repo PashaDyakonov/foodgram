@@ -5,6 +5,7 @@ on: push
 jobs:
   tests:
     runs-on: ubuntu-latest
+    container: python:3.9-slim
     services:
       postgres:
         image: postgres:13.10
@@ -21,7 +22,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: python:3.9-slim
+        python-version: python:3.9
 
     - name: Install dependencies
       run: |
