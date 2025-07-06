@@ -154,6 +154,7 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
+        db_table = 'recipes_ingredients'
         ordering = ['-id']
         verbose_name = 'Ингридиент в рецепте'
         verbose_name_plural = 'Ингридиенты в рецепте'
