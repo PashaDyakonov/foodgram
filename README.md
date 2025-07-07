@@ -1,4 +1,4 @@
-    Фудграм
+    Фудграм [![Main Foodgram workflow](https://github.com/PashaDyakonov/foodgram/actions/workflows/main.yml/badge.svg)](https://github.com/PashaDyakonov/foodgram/actions/workflows/main.yml)
 
 Фудграм — это платформа для любителей кулинарии, где можно:
 Делиться своими рецептами
