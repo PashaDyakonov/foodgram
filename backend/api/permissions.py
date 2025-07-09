@@ -1,12 +1,8 @@
 from rest_framework import permissions
 
 
-class IsAdminAuthorOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
+class IsAuthorOrReadOnly(permissions.BasePermission):
     message = 'Изменение рецепта доступно только автору или администратору'
-
-    def has_permission(self, request, view):
-        return (request.method in permissions.SAFE_METHODS
-                or request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:

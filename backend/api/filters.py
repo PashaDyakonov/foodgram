@@ -31,22 +31,22 @@ class RecipeFilter(FilterSet):
         model = Recipe
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
-    def filter_favorited(self, queryset, name, value):
+    def filter_favorited(self, recipes, name, value):
         user = (
             self.request.user
             if self.request.user.is_authenticated
             else None
         )
         if value and user:
-            return queryset.filter(favorite__user_id=user.id)
-        return queryset
+            return recipes.filter(favorite__user_id=user.id)
+        return recipes
 
-    def filter_shopping_cart(self, queryset, name, value):
+    def filter_shopping_cart(self, recipes, name, value):
         user = (
             self.request.user
             if self.request.user.is_authenticated
             else None
         )
         if value and user:
-            return queryset.filter(in_shopping_lists__user_id=user.id)
-        return queryset
+            return recipes.filter(in_shopping_lists__user_id=user.id)
+        return recipes

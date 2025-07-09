@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from .models import (
-    Favorite,
     Ingredients,
     Recipe,
     RecipeIngredient,
@@ -22,7 +21,7 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     """Настройка админки для модели Tag."""
 
-    list_display = ('id', 'name', 'slug')
+    list_display = ('id', 'name', 'slug', 'recipe_count')
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
 
@@ -35,9 +34,10 @@ class IngredientAdmin(admin.ModelAdmin):
         'id',
         'name',
         'measurement_unit',
+        'recipe_count',
     )
-    search_fields = ('name',)
-    list_filter = ('name',)
+    search_fields = ('name', 'measurement_unit')
+    list_filter = ('measurement_unit', 'recipe_ingredients')
 
 
 @admin.register(Recipe)
@@ -46,14 +46,18 @@ class RecipeAdmin(admin.ModelAdmin):
 
     list_display = (
         'id',
-        'author',
         'name',
+        'cooking_time',
+        'author',
+        'favorites_count',
+        'ingredients_list',
+        'image_preview',
     )
     search_fields = ('name',)
-    list_filter = ('author', 'tags')
+    list_filter = ('author', 'tags', 'cooking_time')
 
 
-@admin.register(Favorite)
+@admin.register(ShoppingList)
 class FavoriteAdmin(admin.ModelAdmin):
     """Настройка админки для модели Favorite."""
 
@@ -63,11 +67,3 @@ class FavoriteAdmin(admin.ModelAdmin):
         'recipe',
     )
     list_filter = ('user', 'recipe')
-
-
-@admin.register(ShoppingList)
-class ShoppingListAdmin(admin.ModelAdmin):
-    """Настройка админки для модели ShoppingList."""
-
-    list_display = ('id', 'user',)
-    search_fields = ('user',)

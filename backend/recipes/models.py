@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
 import shortuuid
 
 import recipes.constants as constants
@@ -95,13 +95,11 @@ class Recipe(models.Model):
     cooking_time = models.PositiveIntegerField(
         validators=[
             MinValueValidator(constants.MIN_TIME_COOKING),
-            MaxValueValidator(constants.MAX_TIME_COOKING)
         ],
         verbose_name='Время готовки',
         help_text='Укажите время готовки в минутах от 1 минуты до 24ч',
     )
     short_id = models.CharField(
-        max_length=constants.MAX_LENGTH_SHORT_LINK,
         unique=True,
         blank=True,
         null=True,
@@ -147,7 +145,6 @@ class RecipeIngredient(models.Model):
     amount = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(constants.INGREDIENT_AMOUNT_MIN),
-            MaxValueValidator(constants.INGREDIENT_AMOUNT_MAX)
         ],
         help_text='Укажите количество',
         verbose_name='Количество'

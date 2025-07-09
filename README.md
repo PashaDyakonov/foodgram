@@ -9,7 +9,7 @@
 
 Разработчик проекта
 
-Автор проекта — Павел Дьяконов. GitHub: https://github.com/PashaDyakonov
+Автор проекта — [Павел Дьяконов. GitHub: https://github.com/PashaDyakonov](https://github.com/PashaDyakonov)
 
 В проекте применялись:
 
@@ -34,7 +34,9 @@
 
 Сделайте клон репозитория:
     
+    '''
     git clone https://github.com/PashaDyakonov/foodgram.git
+    '''
     
 
 Перейдите в папку с docker-конфигурацией:
@@ -44,11 +46,13 @@
 
 Перед запуском создайте файл .env на основе example.env и укажите:
     
+    '''
     DB_NAME=имя_вашей_бд
     DB_USER=ваш_пользователь_бд
     DB_PASSWORD=пароль_к_бд
     DB_HOST=db
     DB_PORT=5432
+    '''
     
 
 Для запуска контейнера:
