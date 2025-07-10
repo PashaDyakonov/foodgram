@@ -93,7 +93,7 @@ class Recipe(models.Model):
         related_name='recipes'
     )
     cooking_time = models.CharField(
-        validators=[MinValueValidator(constants.MIN_TIME_COOKING)],
+        validators=[MinValueValidator(constants.MIN_TIME_COOKING), 2000],
         verbose_name='Время готовки',
         help_text='Укажите время готовки в минутах от 1 минуты до 24ч',
     )
@@ -141,7 +141,7 @@ class RecipeIngredient(models.Model):
         verbose_name='Ингредиент'
     )
     amount = models.CharField(
-        validators=[MinValueValidator(constants.INGREDIENT_AMOUNT_MIN)],
+        validators=[MinValueValidator(constants.INGREDIENT_AMOUNT_MIN), 2000],
         help_text='Укажите количество',
         verbose_name='Количество'
     )
