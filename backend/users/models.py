@@ -10,7 +10,7 @@ class User(AbstractUser):
 
     username = models.CharField(
         max_length=constants.USERNAME_MAX_LENGTH,
-        verbose_name='Логин пользователя',
+        verbose_name='Логин',
         help_text='Укажите логин пользователя',
         validators=UnicodeUsernameValidator(),
         unique=True,
@@ -57,10 +57,10 @@ class Follow(models.Model):
         related_name='followers',
         help_text='Кто подписан'
     )
-    followings = models.ForeignKey(
+    subscribers = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='followings',
+        related_name='subscribers',
         help_text='Пользователь, на которого подписываются'
     )
 

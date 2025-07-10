@@ -1,10 +1,9 @@
 from django.template.loader import render_to_string
-from recipes.models import ShoppingList
 from datetime import datetime
 
 
 def generate_shopping_list_content(user):
-    shopping_list = ShoppingList.objects.get(user=user)
+    shopping_list = user.shoppers.latest('created_at')
     ingredients = {}
     recipes = set()
 
@@ -15,13 +14,16 @@ def generate_shopping_list_content(user):
             amount = ingredient.amount
             ingredients[key] = ingredients.get(key, 0) + amount
 
-    formatted_ingredients = [
-        (name.capitalize(), amount, unit)
-        for (name, unit), amount in ingredients.items()
-    ]
+    formatted_ingredients = sorted(
+        [
+            (name.capitalize(), amount, unit)
+            for (name, unit), amount in ingredients.items()
+        ],
+        key=lambda x: x[0]
+    )
 
     return render_to_string('shopping_list.txt', {
         'date': datetime.now().strftime('%d.%m.%Y'),
         'ingredients': formatted_ingredients,
-        'recipes': sorted(recipes),
+        'recipes': recipes,
     })

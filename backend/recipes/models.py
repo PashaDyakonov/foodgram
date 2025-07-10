@@ -20,17 +20,17 @@ class Tag(models.Model):
     slug = models.SlugField(
         unique=True,
         max_length=32,
-        verbose_name='URL-адерс',
+        verbose_name='Уникальный идентификатор (slug)',
         help_text='Введите URL-адрес'
     )
 
     class Meta:
-        ordering = ('cooking_time',)
+        ordering = ('name',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return {self.name}
+        return self.name
 
 
 class Ingredients(models.Model):
@@ -48,7 +48,7 @@ class Ingredients(models.Model):
     )
 
     class Meta:
-        ordering = ('cooking_time',)
+        ordering = ('name',)
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
 
@@ -63,8 +63,7 @@ class Recipe(models.Model):
         User,
         on_delete=models.CASCADE,
         help_text='Укажите автора',
-        verbose_name='Автор',
-        related_name='recipes'
+        verbose_name='Автор'
     )
     name = models.CharField(
         max_length=constants.MAX_LENGTH_NAME_RECIPE,
@@ -92,15 +91,16 @@ class Recipe(models.Model):
         related_name='recipes'
     )
     cooking_time = models.CharField(
-        validators=[MinValueValidator(constants.MIN_TIME_COOKING), 2000],
+        validators=[MinValueValidator(constants.MIN_TIME_COOKING)],
         verbose_name='Время готовки',
-        help_text='Укажите время готовки в минутах от 1 минуты',
+        help_text='Укажите время готовки от {constants.MIN_TIME_COOKING} мин.',
     )
 
     class Meta:
-        ordering = ('cooking_time',)
+        ordering = ('author',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        related_name = 'recipes'
 
     def __str__(self):
         return f'{self.author.username} - {self.name}'
@@ -113,25 +113,26 @@ class RecipeIngredient(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         help_text='Укажите рецепт',
-        verbose_name='Рецепт',
-        related_name='recipe_ingredients'
+        verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
         Ingredients,
         on_delete=models.CASCADE,
         help_text='Укажите ингредиент',
-        verbose_name='Ингредиент'
+        verbose_name='Ингредиент',
+        related_name='recipe_ingredient'
     )
     amount = models.CharField(
-        validators=[MinValueValidator(constants.INGREDIENT_AMOUNT_MIN), 2000],
+        validators=[MinValueValidator(constants.INGREDIENT_AMOUNT_MIN)],
         help_text='Укажите количество',
         verbose_name='Количество'
     )
 
     class Meta:
-        ordering = ('cooking_time',)
+        ordering = ('recipe',)
         verbose_name = 'Ингридиент в рецепте'
         verbose_name_plural = 'Ингридиенты в рецепте'
+        related_name = 'recipe_ingredients'
 
     def __str__(self):
         return (f'{self.recipe.name} - {self.ingredient.name} -'
@@ -156,7 +157,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        ordering = ('cooking_time',)
+        ordering = ('user',)
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
         unique_together = ('user', 'recipe')
@@ -170,7 +171,7 @@ class ShoppingList(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='shopper',
+        related_name='shoppers',
         verbose_name='Покупатель',
         help_text='Укажите покупателя',
     )
@@ -182,11 +183,16 @@ class ShoppingList(models.Model):
     )
 
     class Meta:
-        ordering = ('cooking_time',)
+        ordering = ('user',)
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
-        unique_together = ('user',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['follower', 'following'],
+                name='unique_follow'
+            )
+        ]
 
     def __str__(self):
         """Возвращает строковое представление списка покупок."""
-        return {self.user.username}
+        return self.user.username
