@@ -26,12 +26,12 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ('cooking_time',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return f'{self.name}'
+        return {self.name}
 
 
 class Ingredients(models.Model):
@@ -49,7 +49,7 @@ class Ingredients(models.Model):
     )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ('cooking_time',)
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
 
@@ -95,33 +95,16 @@ class Recipe(models.Model):
     cooking_time = models.CharField(
         validators=[MinValueValidator(constants.MIN_TIME_COOKING), 2000],
         verbose_name='Время готовки',
-        help_text='Укажите время готовки в минутах от 1 минуты до 24ч',
-    )
-    short_id = models.CharField(
-        unique=True,
-        blank=True,
-        null=True,
-        verbose_name='Сокращенная ссылка',
-        help_text='Сокращенная ссылка на рецепт'
+        help_text='Укажите время готовки в минутах от 1 минуты',
     )
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('cooking_time',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return f'{self.author.username} - {self.name}'
-
-    def save(self, *args, **kwargs):
-        if not self.short_id:
-            self.short_id = shortuuid.ShortUUID().random(length=6)
-        super().save(*args, **kwargs)
-
-    def get_short_url(self, request=None):
-        if request:
-            return request.build_absolute_uri(f'/r/{self.short_id}/')
-        return f'/r/{self.short_id}/'
 
 
 class RecipeIngredient(models.Model):
@@ -147,7 +130,7 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ('cooking_time',)
         verbose_name = 'Ингридиент в рецепте'
         verbose_name_plural = 'Ингридиенты в рецепте'
 
@@ -174,7 +157,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ('cooking_time',)
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
         unique_together = ('user', 'recipe')
@@ -200,11 +183,11 @@ class ShoppingList(models.Model):
     )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ('cooking_time',)
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         unique_together = ('user',)
 
     def __str__(self):
         """Возвращает строковое представление списка покупок."""
-        return f'{self.user.username} '
+        return {self.user.username}
