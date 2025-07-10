@@ -290,10 +290,10 @@ class UserViewSet(UserSerializer):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     def validate(self, data):
-        request = self.context.get('request') 
+        request = self.context.get('request')
         user = request.user
-        following_id = request.parser_context['kwargs']['pk'] 
-        following = get_object_or_404(User, id=following_id) 
+        following_id = request.parser_context['kwargs']['pk']
+        following = get_object_or_404(User, id=following_id)
         if user == following:
             raise serializers.ValidationError(
                 {"error": "Подписка самого на себя запрещена."}
