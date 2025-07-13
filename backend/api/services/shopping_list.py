@@ -42,7 +42,9 @@ def generate_shopping_list_content(user):
         recipes_info.append(f'{recipe.name} (автор: {recipe.author.username})')
 
         for ingredient in recipe.ingredients.all():
-            key = (ingredient.name.lower(), ingredient.measurement_unit.lower())
+            key = (
+                ingredient.name.lower(), ingredient.measurement_unit.lower()
+            )
             if key not in ingredients_info:
                 ingredients_info[key] = {
                     'name': ingredient.name.capitalize(),
