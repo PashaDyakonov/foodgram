@@ -40,7 +40,7 @@ def generate_shopping_list_content(user):
         'author'
     ).prefetch_related(
             'ingredients'):
-        recipes_info.append(f"{recipe.name} (автор: {recipe.author.username})")
+        recipes_info.append(f'{recipe.name} (автор: {recipe.author.username})')
 
         for ingredient in recipe.ingredients.all():
             key = (ingredient.name.lower(),
@@ -63,7 +63,7 @@ def generate_shopping_list_content(user):
     )
 
     return '\n'.join([
-        f'Список покупок ({datetime.now().strftime('%d.%m.%Y %H:%M')}',
+        f'Список покупок ({datetime.now().strftime('%d.%m.%Y %H:%M')})',
         '\nНеобходимые ингредиенты:',
         *[f'{idx}. {item['name']} - {item['amount']} {item['unit']}'
           for idx, item in enumerate(sorted_ingredients, 1)],

@@ -12,14 +12,13 @@ from rest_framework.response import Response
 
 from recipes.models import (
     Favorite,
+    Follow,
     Ingredients,
     Recipe,
     ShoppingList,
     Tag,
-    Follow,
 )
 from services.shopping_list import generate_shopping_list_content
-
 from .filters import IngredientFilter, RecipeFilter
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (

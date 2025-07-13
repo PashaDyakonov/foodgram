@@ -1,9 +1,8 @@
-from core.management.commands._base_import import BaseImportCommand
-
-from recipes.models import Tags
+from recipes.models import Tag
+from ._base_import import BaseImportCommand
 
 
 class Command(BaseImportCommand):
-    model = Tags
+    model = Tag
     filename = 'data/tags.json'
     help = 'Load tags from JSON fixture'
