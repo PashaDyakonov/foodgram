@@ -63,7 +63,7 @@ def generate_shopping_list_content(user):
     return '\n'.join([
         f'Список покупок ({current_time})',
         '\nНеобходимые ингредиенты:',
-        *[f'{idx}. {item['name']} - {item['amount']} {item['unit']}'
+        *[f'{idx}. {item["name"]} - {item["amount"]} {item["unit"]}'
           for idx, item in enumerate(sorted_ingredients, 1)],
         '\nРецепты:',
         *[f'{idx}. {recipe}'
