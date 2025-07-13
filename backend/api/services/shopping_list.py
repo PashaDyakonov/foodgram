@@ -13,6 +13,7 @@ def get_pluralized_unit(amount, unit):
         'чайная ложка': ('чайная ложка', 'чайные ложки', 'чайных ложек'),
         'грамм': ('грамм', 'грамма', 'граммов'),
         'миллилитр': ('миллилитр', 'миллилитра', 'миллилитров'),
+        'литр': ('литр', 'литра', 'литров'),
     }
 
     if unit not in units_map:
@@ -23,8 +24,7 @@ def get_pluralized_unit(amount, unit):
         return forms[0]
     elif 2 <= amount % 10 <= 4 and (amount % 100 < 10 or amount % 100 >= 20):
         return forms[1]
-    else:
-        return forms[2]
+    return forms[2]
 
 
 def generate_shopping_list_content(user):
@@ -38,14 +38,11 @@ def generate_shopping_list_content(user):
 
     for recipe in shopping_list.recipe.select_related(
         'author'
-    ).prefetch_related(
-            'ingredients'):
+    ).prefetch_related('ingredients'):
         recipes_info.append(f'{recipe.name} (автор: {recipe.author.username})')
 
         for ingredient in recipe.ingredients.all():
-            key = (ingredient.name.lower(),
-                   ingredient.measurement_unit.lower()
-                   )
+            key = (ingredient.name.lower(), ingredient.measurement_unit.lower())
             if key not in ingredients_info:
                 ingredients_info[key] = {
                     'name': ingredient.name.capitalize(),
@@ -62,13 +59,14 @@ def generate_shopping_list_content(user):
         key=lambda x: x['name']
     )
 
+    current_time = datetime.now().strftime('%d.%m.%Y %H:%M')
     return '\n'.join([
-        f'Список покупок ({datetime.now().strftime('%d.%m.%Y %H:%M')})',
+        f'Список покупок ({current_time})',
         '\nНеобходимые ингредиенты:',
         *[f'{idx}. {item['name']} - {item['amount']} {item['unit']}'
           for idx, item in enumerate(sorted_ingredients, 1)],
         '\nРецепты:',
-        *[f"{idx}. {recipe}"
+        *[f'{idx}. {recipe}'
           for idx, recipe in enumerate(recipes_info, 1)],
         '\nПриятного приготовления!'
     ])
