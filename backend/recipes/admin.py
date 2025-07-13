@@ -7,7 +7,6 @@ from .models import (
     Ingredients,
     Recipe,
     RecipeIngredient,
-    ShoppingList,
     Tag,
 )
 
@@ -27,7 +26,7 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     """Настройка админки для модели Tag."""
 
-    list_display = ('id', 'name', 'slug', 'recipe_count')
+    list_display = ('id', 'name', 'slug')
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
 
@@ -40,10 +39,9 @@ class IngredientAdmin(admin.ModelAdmin):
         'id',
         'name',
         'measurement_unit',
-        'recipe_count',
     )
     search_fields = ('name', 'measurement_unit')
-    list_filter = ('measurement_unit', 'recipe_ingredients')
+    list_filter = ('measurement_unit')
 
 
 @admin.register(Recipe)
@@ -58,12 +56,13 @@ class RecipeAdmin(admin.ModelAdmin):
         'favorites_count',
         'ingredients_list',
         'image_preview',
+        'tags',
     )
     search_fields = ('name',)
     list_filter = ('author', 'tags', 'cooking_time')
 
 
-@admin.register(ShoppingList)
+@admin.register(Follow)
 class FavoriteAdmin(admin.ModelAdmin):
     """Настройка админки для модели Favorite."""
 
@@ -85,9 +84,6 @@ class UserAdmin(BaseUserAdmin):
         'get_full_name',
         'email',
         'avatar',
-        'recipes_count',
-        'following_count',
-        'followers_count',
         'is_active',
     )
     search_fields = ('username',)

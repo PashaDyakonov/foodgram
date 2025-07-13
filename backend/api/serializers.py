@@ -1,3 +1,4 @@
+from collections import Counter
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
@@ -191,48 +192,48 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def validate_tags(self, value):
-        if not value:
+    def _validate_no_duplicates(self, items, item_name, id_extractor=None):
+        """Общий метод для проверки дубликатов."""
+        if not items:
             raise serializers.ValidationError(
-                'Добавьте хотя бы один тег.'
+                f'Добавьте хотя бы один {item_name}.'
             )
-
-        seen = set()
-        duplicates = []
-        for tag in value:
-            if tag in seen:
-                duplicates.append(tag)
-            else:
-                seen.add(tag)
+        duplicates = [
+            item_id for item_id, count
+            in Counter(
+                [
+                    id_extractor(item)for item in items
+                ]
+                if id_extractor else items).items() if count > 1
+        ]
 
         if duplicates:
-            raise serializers.ValidationError(
-                f'Найдены дублирующиеся теги: {duplicates}'
-            )
+            if id_extractor:
+                duplicate_items = [
+                    item for item in items if id_extractor(item) in duplicates
+                ]
+                raise ValidationError(
+                    f'Найдены дублирующиеся {item_name}: {duplicate_items}'
+                )
+            raise ValidationError({
+                item_name: (
+                    f'Найдены дублирующиеся {item_name}: '
+                    f'{", ".join(map(str, duplicates))}'
+                )
+            }, code=f'duplicate_{item_name}')
+        return items
 
-        return value
+    def validate_tags(self, value):
+        return self._validate_no_duplicates(
+            value, 'тег', id_extractor=lambda tag: tag.id
+        )
 
     def validate_ingredients(self, value):
-        if not value:
-            raise serializers.ValidationError(
-                'Добавьте хотя бы один ингредиент.'
-            )
-
-        ingredient_ids = [ingredient['id'] for ingredient in value]
-        if len(ingredient_ids) != len(set(ingredient_ids)):
-            duplicates = {
-                x for x in ingredient_ids if ingredient_ids.count(x) > 1
-            }
-            raise ValidationError(
-                {
-                    'ingredients': (
-                        'Найдены дублирующиеся ингредиенты: '
-                        f'{", ".join(map(str, duplicates))}'
-                    )
-                },
-                code='duplicate_ingredients'
-            )
-        return value
+        return self._validate_no_duplicates(
+            value,
+            'ингредиент',
+            id_extractor=lambda ingredient: ingredient['id']
+        )
 
     @staticmethod
     def create_recipe_ingredients_bulk(instance, ingredients_data):

@@ -12,21 +12,18 @@ class BaseImportCommand(BaseCommand):
     def handle(self, *args, **options):
         try:
             with open(self.filename, encoding='utf-8') as f:
-                items = [
-                    self.model(**item)
-                    for item in json.load(f)
-                    if self.is_valid_item(item)
-                ]
-
                 created_count = len(self.model.objects.bulk_create(
-                    items,
+                    [
+                        self.model(**item)
+                        for item in json.load(f)
+                    ],
                     ignore_conflicts=True
                 ))
                 self.stdout.write(
                     self.style.SUCCESS(
                         f'Успешно загружено {created_count} '
-                        '{self.model._meta.verbose_name_plural} из '
-                        '{self.filename}'
+                        f'{self.model._meta.verbose_name_plural} из '
+                        f'{self.filename}'
                     )
                 )
 
