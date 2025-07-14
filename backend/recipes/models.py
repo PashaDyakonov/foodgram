@@ -186,7 +186,7 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         help_text='Укажите рецепт',
         verbose_name='Рецепт',
-        related_name='recipe'
+        related_name='recipe_ingredients'
     )
     ingredient = models.ForeignKey(
         Ingredients,
