@@ -135,6 +135,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name='recipes',
         help_text='Укажите автора',
         verbose_name='Автор'
     )
@@ -172,7 +173,6 @@ class Recipe(models.Model):
         ordering = ('-created_at',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        related_name = 'recipes'
 
     def __str__(self):
         return f'{self.author.username} - {self.name}'
@@ -185,8 +185,7 @@ class RecipeIngredient(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         help_text='Укажите рецепт',
-        verbose_name='Рецепт',
-        related_name='recipe_ingredients'
+        verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
         Ingredients,
@@ -204,6 +203,7 @@ class RecipeIngredient(models.Model):
         ordering = ('recipe',)
         verbose_name = 'Ингридиент в рецепте'
         verbose_name_plural = 'Ингридиенты в рецепте'
+        related_name = 'recipe_ingredients'
 
     def __str__(self):
         return (f'{self.recipe.name} - {self.ingredient.name} -'
