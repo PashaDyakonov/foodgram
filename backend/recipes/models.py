@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
+from django.forms import ModelForm
 
 import recipes.constants as constants
 
@@ -129,7 +130,7 @@ class Ingredients(models.Model):
         return f'{self.name} - {self.measurement_unit}'
 
 
-class Recipe(models.Model):
+class Recipe(ModelForm):
     """Модель для рецептов."""
 
     author = models.ForeignKey(
