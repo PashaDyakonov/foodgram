@@ -3,6 +3,7 @@ from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.serializers import UserSerializer as DjoserUserSerializer
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -78,9 +79,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         content = generate_shopping_list_content(request.user)
-        if not content:
-            raise ValidationError({'error': 'Список покупок пуст'})
-
         response = FileResponse(content, content_type='text/plain')
         response[
             'Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
@@ -96,24 +94,30 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     def _manage_related_model(
-            self, request, pk, model_class, serializer_class, relation_field):
+            self, request, pk, model_class):
         """Общий метод для управления избранным и списком покупок."""
         user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
-
+        if model_class == Favorite:
+            serializer_class = ShortRecipeSerializer
+            relation_field = 'recipe'
+            model_name = 'избранное'
+        elif model_class == ShoppingList:
+            serializer_class = ShortRecipeSerializer
+            relation_field = 'recipe'
+            model_name = 'список покупок'
+        model_name = {
+            Favorite: "избранное",
+            ShoppingList: "список покупок",
+        }[model_class]
         if request.method == 'DELETE':
-            deleted = model_class.objects.filter(
+            relation = get_object_or_404(
                 user=user,
-                **{relation_field: recipe}
-            ).delete()
-
-            if not deleted[0]:
-                return Response(
-                    {'error': 'Связь не найдена'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+                **{relation_field: pk}
+            )
+            relation.delete
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+        recipe = get_object_or_404(Recipe, id=pk)
         _, created = model_class.objects.get_or_create(
             user=user,
             **{relation_field: recipe}
@@ -121,7 +125,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if not created:
             raise ValidationError(
-                {'error': f'Рецепт "{recipe.name}" уже добавлен'},
+                {'error': f'Рецепт "{recipe.name}" уже есть в {model_name}'},
                 code=status.HTTP_400_BAD_REQUEST
             )
 
@@ -142,8 +146,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             request,
             pk,
             Favorite,
-            ShortRecipeSerializer,
-            'recipe'
+            model_name='избранное'
         )
 
     @action(
@@ -158,12 +161,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             request,
             pk,
             ShoppingList,
-            ShortRecipeSerializer,
-            'recipe'
+            model_name='список покупок'
         )
 
 
-class UserViewSet():
+class UserViewSet(DjoserUserSerializer):
     """Вьюсет для работы с пользователями и подписками."""
 
     queryset = User.objects.all()
@@ -208,56 +210,57 @@ class UserViewSet():
     )
     def subscriptions(self, request):
         """Получение списка подписок с рецептами."""
-        following_users = request.user.follower.select_related(
-            'following').values_list('following', flat=True)
-        queryset = User.objects.filter(
-            id__in=following_users).prefetch_related('recipes')
-        page = self.paginate_queryset(queryset)
+        return self.get_paginated_response(
+            FollowUserSerializer(
+                self.paginate_queryset(
+                    User.objects.filter(
+                        id__in=request.user.follower.select_related(
+                            'following').values_list(
+                                'following',
+                                flat=True)).prefetch_related(
+                                    'recipes')
+                ),
+                many=True,
+                context={'request': request}).data
+        )
+
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        url_path='subscribe',
+        permission_classes=[IsAuthenticated]
+    )
+    def subscribe(self, request, pk=None):
+        """Управление подпиской на пользователя с валидацией."""
+        user = request.user
+
+        if request.method == 'DELETE':
+            subscription = get_object_or_404(
+                Follow,
+                user=user,
+                following_id=pk
+            )
+            subscription.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        following = get_object_or_404(User, id=pk)
+
+        if user == following:
+            return Response(
+                {'error': 'Нельзя подписаться на самого себя'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        _, created = Follow.objects.get_or_create(
+            user=user,
+            following=following,
+            defaults={'user': user, 'following': following}
+        )
+        if not created:
+            return Response(
+                {'error': f'Вы уже подписаны на {following.username}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         serializer = FollowUserSerializer(
-            page,
-            many=True,
+            _.following,
             context={'request': request}
         )
-        return self.get_paginated_response(serializer.data)
-
-
-@action(
-    detail=True,
-    methods=['post', 'delete'],
-    url_path='subscribe',
-    permission_classes=[IsAuthenticated]
-)
-def subscribe(self, request, pk=None):
-    """Управление подпиской на пользователя с валидацией."""
-    user = request.user
-
-    if request.method == 'DELETE':
-        deleted = user.follower.filter(following_id=pk).delete()
-        if deleted[0] == 0:
-            return Response(
-                {'error': 'Подписка не найдена'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    following = get_object_or_404(User, id=pk)
-
-    if user == following:
-        return Response(
-            {'error': 'Нельзя подписаться на самого себя'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    follow, created = Follow.objects.get_or_create(
-        user=user,
-        following=following,
-        defaults={'user': user, 'following': following}
-    )
-    if not created:
-        return Response(
-            {'error': 'Вы уже подписаны на этого пользователя'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    serializer = FollowUserSerializer(
-        follow.following,
-        context={'request': request}
-    )
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

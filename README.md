@@ -134,7 +134,6 @@
 
 Основные ссылки:
 
--  Рабочий сервер: [https://foodgrampc.hopto.org](https://foodgrampc.hopto.org)
--  Админ-панель: [https://foodgrampc.hopto.org/admin](https://foodgrampc.hopto.org/admin)
--  Документация API: [https://foodgrampc.hopto.org/api/docs](https://foodgrampc.hopto.org/api/docs)
--  Docker образ: [https://hub.docker.com/r/vegence/foodgram](https://hub.docker.com/r/vegence/foodgram)
+-  [Рабочий сервер](https://foodgrampc.hopto.org)
+-  [Админ-панель](https://foodgrampc.hopto.org/admin)
+-  [Документация API](https://foodgrampc.hopto.org/api/docs)

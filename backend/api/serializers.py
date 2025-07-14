@@ -209,17 +209,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ]
 
         if duplicates:
-            if id_extractor:
-                duplicate_items = [
-                    item for item in items if id_extractor(item) in duplicates
-                ]
-                raise ValidationError(
-                    f'Найдены дублирующиеся {item_name}: {duplicate_items}'
-                )
             raise ValidationError({
                 item_name: (
                     f'Найдены дублирующиеся {item_name}: '
-                    f'{", ".join(map(str, duplicates))}'
+                    f'{duplicates}'
                 )
             }, code=f'duplicate_{item_name}')
         return items

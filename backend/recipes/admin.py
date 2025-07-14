@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
+from .apps import count_recipes
 from users.models import Follow
 from .models import Ingredients, Recipe, RecipeIngredient, Tag
 
@@ -21,8 +22,8 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     """Настройка админки для модели Tag."""
 
-    list_display = ('id', 'name', 'slug')
-    search_fields = ('name',)
+    list_display = ('id', 'name', 'slug', count_recipes,)
+    search_fields = ('name', 'slug',)
     prepopulated_fields = {'slug': ('name',)}
 
 
@@ -48,12 +49,9 @@ class RecipeAdmin(admin.ModelAdmin):
         'name',
         'cooking_time',
         'author',
-        'favorites_count',
-        'ingredients_list',
-        'image_preview',
         'tags',
     )
-    search_fields = ('name',)
+    search_fields = ('name', 'tags',)
     list_filter = ('author', 'tags', 'cooking_time')
 
 
@@ -76,13 +74,13 @@ class UserAdmin(BaseUserAdmin):
     list_display = (
         'pk',
         'username',
-        'get_full_name',
         'email',
         'avatar',
         'is_active',
+        count_recipes,
     )
     search_fields = ('username',)
-    list_filter = ('username',)
+    list_filter = ('username', 'email',)
     empty_value_display = '-пусто-'
 
 

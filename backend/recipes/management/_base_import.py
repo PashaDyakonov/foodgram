@@ -8,7 +8,6 @@ class BaseImportCommand(BaseCommand):
     """Базовый класс для импорта данных из JSON"""
     model: models.Model
     filename: str
-    help: str
 
     def handle(self, *args, **options):
         try:
