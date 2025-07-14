@@ -13,7 +13,7 @@ class User(AbstractUser):
         max_length=constants.USERNAME_MAX_LENGTH,
         verbose_name='Логин',
         help_text='Укажите логин пользователя',
-        validators=UnicodeUsernameValidator(),
+        validators=[UnicodeUsernameValidator()],
         unique=True,
     )
     email = models.EmailField(
