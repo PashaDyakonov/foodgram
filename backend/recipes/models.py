@@ -185,6 +185,7 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
+        related_name='recipe_ingredients',
         help_text='Укажите рецепт',
         verbose_name='Рецепт'
     )
@@ -202,7 +203,7 @@ class RecipeIngredient(models.Model):
 
     class Meta:
         ordering = ('recipe',)
-        related_name = 'recipe_ingredients'
+        verbose_name = 'Ингридиент в рецепте'
         verbose_name_plural = 'Ингридиенты в рецепте'
 
     def __str__(self):
