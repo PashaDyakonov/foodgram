@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'django.contrib.auth',
+    'users',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
 ]
