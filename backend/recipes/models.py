@@ -202,7 +202,6 @@ class RecipeIngredient(models.Model):
 
     class Meta:
         ordering = ('recipe',)
-        verbose_name = 'Ингридиент в рецепте'
         related_name = 'recipe_ingredients'
         verbose_name_plural = 'Ингридиенты в рецепте'
 
