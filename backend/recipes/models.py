@@ -248,6 +248,7 @@ class ShoppingList(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name='shopping_carts',
         verbose_name='Покупатель',
         help_text='Укажите покупателя',
     )
@@ -260,7 +261,6 @@ class ShoppingList(models.Model):
     class Meta:
         ordering = ('user',)
         verbose_name = 'Список покупок'
-        related_name = 'shopping_carts',
         verbose_name_plural = 'Списки покупок'
         constraints = [
             models.UniqueConstraint(
