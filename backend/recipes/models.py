@@ -66,7 +66,7 @@ class Follow(models.Model):
     )
 
     class Meta:
-        ordering = ('username',)
+        ordering = ('user__username',)
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
@@ -171,7 +171,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ('-created_at',)
+        ordering = ('-id',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
