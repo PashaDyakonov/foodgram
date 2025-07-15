@@ -71,7 +71,7 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'following'],
+                fields=['user', 'author'],
                 name='unique_author'
             )
         ]
@@ -260,7 +260,7 @@ class ShoppingList(models.Model):
     )
 
     class Meta:
-        ordering = ('user',)
+        ordering = ['user',]
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         constraints = [
