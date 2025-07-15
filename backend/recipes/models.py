@@ -217,6 +217,7 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name='favorites',
         help_text='Пользователь устанавливается автоматически',
         verbose_name='Пользователь',
     )
@@ -229,7 +230,6 @@ class Favorite(models.Model):
 
     class Meta:
         ordering = ('user',)
-        related_name = 'favorites'
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
         constraints = [
