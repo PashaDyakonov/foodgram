@@ -43,7 +43,7 @@ class IngredientAdmin(admin.ModelAdmin):
         'measurement_unit',
     )
     search_fields = ('name', 'measurement_unit')
-    list_filter = ('measurement_unit')
+    list_filter = ('measurement_unit',)
 
 
 @admin.register(Recipe)
@@ -55,7 +55,6 @@ class RecipeAdmin(admin.ModelAdmin):
         'name',
         'cooking_time',
         'author',
-        'tags',
     )
     search_fields = ('name', 'tags',)
     list_filter = ('author', 'tags', 'cooking_time')
@@ -97,6 +96,6 @@ class FollowAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'user',
-        'following',
+        'author',
     )
-    list_filter = ('user', 'following')
+    list_filter = ('user', 'author')

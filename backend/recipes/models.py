@@ -72,7 +72,7 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'following'],
-                name='unique_follow'
+                name='unique_author'
             )
         ]
 
@@ -165,6 +165,7 @@ class Recipe(models.Model):
     )
     cooking_time = models.CharField(
         validators=[MinValueValidator(constants.MIN_TIME_COOKING)],
+        max_length=10,
         verbose_name='Время готовки',
         help_text='Укажите время готовки от {constants.MIN_TIME_COOKING} мин.',
     )
@@ -196,6 +197,7 @@ class RecipeIngredient(models.Model):
     )
     amount = models.CharField(
         validators=[MinValueValidator(constants.INGREDIENT_AMOUNT_MIN)],
+        max_length=10,
         help_text='Укажите количество',
         verbose_name='Количество'
     )
@@ -264,7 +266,7 @@ class ShoppingList(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['follower', 'following'],
-                name='unique_follow'
+                name='unique_shopping_list'
             )
         ]
 
