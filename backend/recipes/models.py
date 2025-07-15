@@ -260,12 +260,12 @@ class ShoppingList(models.Model):
     )
 
     class Meta:
-        ordering = ['user',]
+        ordering = ('user',)
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         constraints = [
             models.UniqueConstraint(
-                fields=['follower', 'following'],
+                fields=['user'],
                 name='unique_shopping_list'
             )
         ]
