@@ -1,3 +1,4 @@
+# noqa
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -191,8 +192,7 @@ class RecipeIngredient(models.Model):
         Ingredients,
         on_delete=models.CASCADE,
         help_text='Укажите ингредиент',
-        verbose_name='Ингредиент',
-        related_name='recipe_ingredients'
+        verbose_name='Ингредиент'
     )
     amount = models.CharField(
         validators=[MinValueValidator(constants.INGREDIENT_AMOUNT_MIN)],
@@ -203,6 +203,7 @@ class RecipeIngredient(models.Model):
     class Meta:
         ordering = ('recipe',)
         verbose_name = 'Ингридиент в рецепте'
+        related_name = 'recipe_ingredients'
         verbose_name_plural = 'Ингридиенты в рецепте'
 
     def __str__(self):
