@@ -12,6 +12,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -20,8 +21,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    'django.contrib.auth',
-    'users',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
 ]
@@ -37,8 +36,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
-
-AUTH_USER_MODEL = 'users.User'
 
 TEMPLATES = [
     {
@@ -130,3 +127,5 @@ DJOSER = {
         'current_user': 'api.serializers.UserSerializer',
     }
 }
+
+AUTH_USER_MODEL = 'recipes.User'

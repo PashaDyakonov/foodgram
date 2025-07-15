@@ -1,4 +1,3 @@
-# noqa
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator

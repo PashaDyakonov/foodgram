@@ -3,8 +3,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .apps import count_recipes
-from users.models import Follow
-from .models import Ingredients, Recipe, RecipeIngredient, Tag
+from .models import (
+    Follow,
+    Favorite,
+    Ingredients,
+    Recipe,
+    RecipeIngredient,
+    Tag,
+)
 
 
 User = get_user_model()
@@ -55,7 +61,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'tags', 'cooking_time')
 
 
-@admin.register(Follow)
+@admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     """Настройка админки для модели Favorite."""
 

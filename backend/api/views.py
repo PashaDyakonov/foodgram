@@ -3,7 +3,7 @@ from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.serializers import UserSerializer as DjoserUserSerializer
+from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -19,7 +19,7 @@ from recipes.models import (
     ShoppingList,
     Tag,
 )
-from services.shopping_list import generate_shopping_list_content
+from api.services.shopping_list import generate_shopping_list_content
 from .filters import IngredientFilter, RecipeFilter
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
@@ -165,7 +165,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
 
-class UserViewSet(DjoserUserSerializer):
+class UserViewSet(DjoserUserViewSet):
     """Вьюсет для работы с пользователями и подписками."""
 
     queryset = User.objects.all()
