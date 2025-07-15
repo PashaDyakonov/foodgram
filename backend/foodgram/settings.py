@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django_filters',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
+    'recipes'
 ]
 
 MIDDLEWARE = [
