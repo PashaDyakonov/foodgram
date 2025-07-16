@@ -114,7 +114,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 user=user,
                 **{relation_field: pk}
             )
-            relation.delete
+            relation.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         recipe = get_object_or_404(Recipe, id=pk)
