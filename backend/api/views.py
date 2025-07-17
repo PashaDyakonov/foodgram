@@ -105,10 +105,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer_class = ShortRecipeSerializer
             relation_field = 'recipe'
             model_name = 'список покупок'
-        model_name = {
-            Favorite: "избранное",
-            ShoppingList: "список покупок",
-        }[model_class]
         if request.method == 'DELETE':
             relation = get_object_or_404(
                 user=user,
@@ -146,7 +142,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             request,
             pk,
             Favorite,
-            model_name='избранное'
         )
 
     @action(
@@ -161,7 +156,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             request,
             pk,
             ShoppingList,
-            model_name='список покупок'
         )
 
 
@@ -235,12 +229,10 @@ class UserViewSet(DjoserUserViewSet):
         user = request.user
 
         if request.method == 'DELETE':
-            subscription = get_object_or_404(
+            get_object_or_404(
                 Follow,
                 user=user,
-                following_id=pk
-            )
-            subscription.delete()
+                following_id=pk).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         following = get_object_or_404(User, id=pk)
 
