@@ -163,15 +163,14 @@ class Recipe(models.Model):
         verbose_name='Теги',
         help_text='Выберите теги',
     )
-    cooking_time = models.CharField(
+    cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(constants.MIN_TIME_COOKING)],
-        max_length=10,
         verbose_name='Время готовки',
         help_text='Укажите время готовки от {constants.MIN_TIME_COOKING} мин.',
     )
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('-created_at',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -192,6 +191,7 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(
         Ingredients,
         on_delete=models.CASCADE,
+        related_name='recipe_ingredient',
         help_text='Укажите ингредиент',
         verbose_name='Ингредиент'
     )
@@ -225,6 +225,7 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
+        related_name='favorites_recipes',
         help_text='Укажите рецепт, чтобы добавить в избранное',
         verbose_name='Избранное',
     )
@@ -256,6 +257,7 @@ class ShoppingList(models.Model):
     recipe = models.ManyToManyField(
         Recipe,
         verbose_name='Рецепты',
+        related_name='recipes_in_carts',
         help_text='Выберите рецепты для покупки ингридиентов',
     )
 

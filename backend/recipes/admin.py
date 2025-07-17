@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 
-from .apps import count_recipes
 from .models import (
     Follow,
     Favorite,
@@ -28,9 +29,13 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     """Настройка админки для модели Tag."""
 
-    list_display = ('id', 'name', 'slug', count_recipes,)
+    list_display = ('id', 'name', 'slug',)
     search_fields = ('name', 'slug',)
     prepopulated_fields = {'slug': ('name',)}
+
+    def count_recipes(tag):
+        """Возвращает количество рецептов для тега."""
+        return tag.recipes.count()
 
 
 @admin.register(Ingredients)
@@ -41,6 +46,7 @@ class IngredientAdmin(admin.ModelAdmin):
         'id',
         'name',
         'measurement_unit',
+        'count_recipes',
     )
     search_fields = ('name', 'measurement_unit')
     list_filter = ('measurement_unit',)
@@ -55,9 +61,41 @@ class RecipeAdmin(admin.ModelAdmin):
         'name',
         'cooking_time',
         'author',
+        'favorites_count',
+        'ingredients_list',
+        'tags_list',
+        'image_preview',
     )
-    search_fields = ('name', 'tags', 'author',)
+    search_fields = ('name', 'tags', 'author')
     list_filter = ('author', 'tags', 'cooking_time')
+    readonly_fields = ('image_preview',)
+
+    def favorites_count(self, recipe):
+        """Количество добавлений в избранное."""
+        return recipe.favorites.count()
+
+    @mark_safe
+    def ingredients_list(self, obj):
+        """Список ингредиентов с HTML-разметкой."""
+        return (f'{ing.ingredient.name} - {ing.amount} '
+                f'{ing.ingredient.measurement_unit}'
+                for ing in obj.recipe_ingredients.all()
+                )
+
+    @mark_safe
+    def tags_list(self, obj):
+        """Список тегов с HTML-разметкой."""
+        return [tag.name for tag in obj.tags.all()]
+
+    @mark_safe
+    def image_preview(self, preview):
+        """Превью изображения с HTML-разметкой."""
+        if preview.image:
+            return format_html(
+                '<img src="{}" style="max-height: 100px; max-width: 100px;" />',
+                preview.image.url
+            )
+        return "Нет изображения"
 
 
 @admin.register(Favorite)
@@ -82,7 +120,6 @@ class UserAdmin(BaseUserAdmin):
         'email',
         'avatar',
         'is_active',
-        count_recipes,
     )
     search_fields = ('username',)
     list_filter = ('username', 'email',)
