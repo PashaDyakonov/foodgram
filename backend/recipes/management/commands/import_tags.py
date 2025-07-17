@@ -4,4 +4,3 @@ from ._base_import import BaseImportCommand
 
 class Command(BaseImportCommand):
     model = Tag
-    filename = 'data/tags.json'
