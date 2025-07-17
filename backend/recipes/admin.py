@@ -117,10 +117,11 @@ class UserAdmin(BaseUserAdmin):
     """Настройка админки для модели User."""
 
     list_display = (
-        'id',
-        'name',
-        'cooking_time',
-        'author',
+        'pk',
+        'username',
+        'email',
+        'avatar',
+        'is_active',
         TagAdmin.count_recipes,
         RecipeAdmin.favorites_count,
         RecipeAdmin.ingredients_list,
