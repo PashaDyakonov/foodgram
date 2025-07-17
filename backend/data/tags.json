@@ -8,7 +8,23 @@
     "slug": "lunch"
   },
   {
-    "name": "ужин",
+    "name": "ужин", 
     "slug": "dinner"
+  },
+  {
+    "name": "десерт",
+    "slug": "dessert"
+  },
+  {
+    "name": "перекус",
+    "slug": "snack"
+  },
+  {
+    "name": "вегетарианское",
+    "slug": "vegetarian"
+  },
+  {
+    "name": "быстро",
+    "slug": "quick"
   }
 ]
