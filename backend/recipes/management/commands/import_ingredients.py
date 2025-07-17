@@ -4,3 +4,4 @@ from ._base_import import BaseImportCommand
 
 class Command(BaseImportCommand):
     model = Ingredients
+    filename = 'data/ingredients.json'
