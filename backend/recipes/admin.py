@@ -93,7 +93,9 @@ class RecipeAdmin(admin.ModelAdmin):
         """Превью изображения с HTML-разметкой."""
         if preview.image:
             return format_html(
-                '<img src="{}" style="max-height: 100px; max-width: 100px;" />',
+                '<img src="{}"'
+                'style="max-height: 100px;'
+                'max-width: 100px;" />',
                 preview.image.url
             )
         return "Нет изображения"
