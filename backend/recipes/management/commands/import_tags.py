@@ -4,4 +4,4 @@ from ._base_import import BaseImportCommand
 
 class Command(BaseImportCommand):
     model = Tag
-    default_filename = 'data/tags.json'
+    filename = 'data/tags.json'
