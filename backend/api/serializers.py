@@ -74,7 +74,7 @@ class UserSerializer(DjoserUserSerializer):
 
     def get_is_subscribed(self, user):
         request = self.context.get('request')
-        return user.follower.filter(
+        return user.followers.filter(
             user=request.user).exists() if request else False
 
 
