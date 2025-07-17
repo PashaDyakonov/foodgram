@@ -46,7 +46,7 @@ class IngredientAdmin(admin.ModelAdmin):
         'id',
         'name',
         'measurement_unit',
-        'count_recipes',
+        TagAdmin.count_recipes,
     )
     search_fields = ('name', 'measurement_unit')
     list_filter = ('measurement_unit',)
@@ -61,6 +61,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'name',
         'cooking_time',
         'author',
+        TagAdmin.count_recipes,
         'favorites_count',
         'ingredients_list',
         'tags_list',
@@ -106,6 +107,7 @@ class FavoriteAdmin(admin.ModelAdmin):
         'id',
         'user',
         'recipe',
+        TagAdmin.count_recipes,
     )
     list_filter = ('user', 'recipe')
 
