@@ -50,7 +50,7 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', 'measurement_unit')
     list_filter = ('measurement_unit',)
 
-    def recipes_count(self, recipe):
+    def count_recipes(self, recipe):
         """Количество рецептов, использующих этот ингредиент."""
         return recipe.recipe_ingredients.count()
 
