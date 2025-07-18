@@ -250,19 +250,20 @@ class ShoppingList(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name='shopping_carts',
         verbose_name='Покупатель',
         help_text='Укажите покупателя',
     )
     recipe = models.ManyToManyField(
         Recipe,
         verbose_name='Рецепты',
+        related_name='shopping_carts',
         help_text='Выберите рецепты для покупки ингридиентов',
     )
 
     class Meta:
         ordering = ('user',)
         verbose_name = 'Список покупок'
-        related_name = 'shopping_carts'
         verbose_name_plural = 'Списки покупок'
         constraints = [
             models.UniqueConstraint(
