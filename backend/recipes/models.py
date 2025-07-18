@@ -218,12 +218,14 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name='favorites',
         help_text='Пользователь устанавливается автоматически',
         verbose_name='Пользователь',
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
+        related_name='favorites',
         help_text='Укажите рецепт, чтобы добавить в избранное',
         verbose_name='Избранное',
     )
@@ -231,7 +233,6 @@ class Favorite(models.Model):
     class Meta:
         ordering = ('user',)
         verbose_name = 'Избранный рецепт'
-        related_name = 'favorites'
         verbose_name_plural = 'Избранные рецепты'
         constraints = [
             models.UniqueConstraint(
