@@ -170,7 +170,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ('author',)
+        ordering = ('-created_at',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -184,14 +184,12 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='recipe_ingredients',
         help_text='Укажите рецепт',
         verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
         Ingredients,
         on_delete=models.CASCADE,
-        related_name='recipe_ingredient',
         help_text='Укажите ингредиент',
         verbose_name='Ингредиент'
     )
@@ -205,6 +203,7 @@ class RecipeIngredient(models.Model):
     class Meta:
         ordering = ('recipe',)
         verbose_name = 'Ингридиент в рецепте'
+        related_name = 'recipe_ingredients'
         verbose_name_plural = 'Ингридиенты в рецепте'
 
     def __str__(self):
@@ -218,14 +217,12 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='favorites',
         help_text='Пользователь устанавливается автоматически',
         verbose_name='Пользователь',
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorites_recipes',
         help_text='Укажите рецепт, чтобы добавить в избранное',
         verbose_name='Избранное',
     )
@@ -233,6 +230,7 @@ class Favorite(models.Model):
     class Meta:
         ordering = ('user',)
         verbose_name = 'Избранный рецепт'
+        related_name = 'favorites'
         verbose_name_plural = 'Избранные рецепты'
         constraints = [
             models.UniqueConstraint(
@@ -250,20 +248,19 @@ class ShoppingList(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='shopping_carts',
         verbose_name='Покупатель',
         help_text='Укажите покупателя',
     )
     recipe = models.ManyToManyField(
         Recipe,
         verbose_name='Рецепты',
-        related_name='recipes_in_carts',
         help_text='Выберите рецепты для покупки ингридиентов',
     )
 
     class Meta:
         ordering = ('user',)
         verbose_name = 'Список покупок'
+        related_name = 'shopping_carts'
         verbose_name_plural = 'Списки покупок'
         constraints = [
             models.UniqueConstraint(
