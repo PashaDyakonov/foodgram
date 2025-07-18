@@ -170,7 +170,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ('author',)
+        ordering = ('slug',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -191,7 +191,7 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(
         Ingredients,
         on_delete=models.CASCADE,
-        related_name='recipe_ingredient',
+        related_name='recipe_ingredients',
         help_text='Укажите ингредиент',
         verbose_name='Ингредиент'
     )
@@ -225,7 +225,7 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorites_recipes',
+        related_name='favorites',
         help_text='Укажите рецепт, чтобы добавить в избранное',
         verbose_name='Избранное',
     )
@@ -257,7 +257,7 @@ class ShoppingList(models.Model):
     recipe = models.ManyToManyField(
         Recipe,
         verbose_name='Рецепты',
-        related_name='recipes_in_carts',
+        related_name='shopping_carts',
         help_text='Выберите рецепты для покупки ингридиентов',
     )
 
