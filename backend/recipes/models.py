@@ -170,7 +170,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ('slug',)
+        ordering = ('tag',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
