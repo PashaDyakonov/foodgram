@@ -141,7 +141,6 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         max_length=constants.MAX_LENGTH_NAME_RECIPE,
-        related_name='recipes',
         verbose_name='Название рецепта',
         help_text='Введите название рецепта'
     )
@@ -171,7 +170,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('author',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
