@@ -160,6 +160,7 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
+        related_name='recipes',
         verbose_name='Теги',
         help_text='Выберите теги',
     )
