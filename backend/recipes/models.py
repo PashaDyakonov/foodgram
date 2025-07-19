@@ -166,7 +166,7 @@ class Recipe(models.Model):
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(constants.MIN_TIME_COOKING)],
         verbose_name='Время готовки',
-        help_text='Укажите время готовки от {constants.MIN_TIME_COOKING} мин.',
+        help_text='Укажите время готовки.',
     )
 
     class Meta:

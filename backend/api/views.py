@@ -158,6 +158,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ShoppingList,
         )
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        recipe = serializer.instance
+        read_serializer = RecipeReadSerializer(
+            recipe,
+            context={'request': request}
+        )
+        headers = self.get_success_headers(read_serializer.data)
+        return Response(
+            read_serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
+
 
 class UserViewSet(DjoserUserViewSet):
     """Вьюсет для работы с пользователями и подписками."""

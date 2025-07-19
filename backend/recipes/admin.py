@@ -32,7 +32,8 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ('name', 'slug',)
     prepopulated_fields = {'slug': ('name',)}
 
-    def count_recipes(tag):
+    @admin.display(description='Количество рецептов с этим тэгом')
+    def count_recipes(self, tag):
         """Возвращает количество рецептов для тега."""
         return tag.recipes.count()
 
@@ -50,6 +51,7 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', 'measurement_unit')
     list_filter = ('measurement_unit',)
 
+    @admin.display(description='Количество рецептов с этим ингредиентом')
     def count_recipes(self, recipe):
         """Количество рецептов, использующих этот ингредиент."""
         return recipe.recipe_ingredients.count()
@@ -63,7 +65,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'id',
         'name',
         'cooking_time',
-        'author',
+        'get_author_username',
         'favorites_count',
         'ingredients_list',
         'tags_list',
@@ -73,10 +75,17 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'tags', 'cooking_time')
     readonly_fields = ('image_preview',)
 
+    @admin.display(description='Автор')
+    def get_author_username(self, recipe):
+        """Возвращает username автора вместо User object."""
+        return recipe.author.username
+
+    @admin.display(description='Количество добавлений в избранное')
     def favorites_count(self, recipe):
         """Количество добавлений в избранное."""
         return recipe.favorites.count()
 
+    @admin.display(description='Список ингредиентов')
     @mark_safe
     def ingredients_list(self, recipe):
         return '<br>'.join(
@@ -84,11 +93,13 @@ class RecipeAdmin(admin.ModelAdmin):
             for i in recipe.recipe_ingredients.all()
         )
 
+    @admin.display(description='Список тэгов')
     @mark_safe
     def tags_list(self, recipe):
         """Список тегов с HTML-разметкой."""
         return '<br>'.join(tag.name for tag in recipe.tags.all())
 
+    @admin.display(description='Превью')
     @mark_safe
     def image_preview(self, recipe):
         """Превью изображения с HTML-разметкой."""
@@ -131,6 +142,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_active', 'is_staff', 'is_superuser')
     readonly_fields = ('avatar_preview',)
 
+    @admin.display(description='Аватар')
     @mark_safe
     def avatar_preview(self, user):
         """Отображает миниатюру аватара."""
@@ -143,23 +155,31 @@ class UserAdmin(BaseUserAdmin):
             )
         return 'Нет изображения'
 
+    @admin.display(description='ФИО')
     def get_full_name(self, user):
         """Возвращает полное имя (ФИО)."""
         if user.first_name or user.last_name:
             return f'{user.first_name} {user.last_name}'
         return 'ФИО отсутствует'
 
+    @admin.display(description='Рецептов')
     def recipes_count(self, user):
         """Количество рецептов пользователя."""
         return user.recipes.count()
 
+    @admin.display(description='Количество подписок пользователя')
     def following_count(self, user):
         """Количество пользователей, на которых подписан пользователь."""
         return user.followers.count()
 
+    @admin.display(description='Количество подписчиков')
     def followers_count(self, user):
         """Количество подписчиков пользователя."""
         return user.authors.count()
+
+    @admin.display(description='ID')
+    def pk(self, user):
+        return user.pk
 
 
 @admin.register(Follow)
