@@ -170,7 +170,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     ingredients = RecipeIngredientsWriteSerializer(
         many=True,
-        allow_empty=False
+        allow_empty=False,
+        source='recipe_ingredients'
     )
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
@@ -179,10 +180,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     cooking_time = serializers.IntegerField(
         min_value=MIN_TIME_COOKING,
-    )
-    id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredients.objects.all(),
-        source='recipe_ingredients'
     )
 
     class Meta:
