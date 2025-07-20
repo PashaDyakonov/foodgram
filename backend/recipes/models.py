@@ -135,7 +135,6 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='recipes',
         help_text='Укажите автора',
         verbose_name='Автор'
     )
@@ -160,7 +159,6 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
-        related_name='recipes',
         verbose_name='Теги',
         help_text='Выберите теги',
     )
@@ -172,6 +170,7 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ('-cooking_time',)
+        related_name = 'recipes'
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
