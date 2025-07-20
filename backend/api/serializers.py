@@ -127,7 +127,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     ingredients = RecipeIngredientReadSerializer(
         many=True,
-        source='ingredient.measurement_unit'
+        source='recipe_ingredients'
     )
     tags = TagSerializer(read_only=True, many=True)
     is_favorited = serializers.SerializerMethodField()
@@ -149,13 +149,14 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         )
 
     def check_user_status(self, obj, model):
-        request = self.context.get('request')
-        if not request or not request.user.is_authenticated:
-            return False
-        return model.objects.filter(
-            recipe=obj,
-            user=request.user
-        ).exists()
+        user = self.context.get('request')
+        return (
+            user.user.is_authenticated
+            and model.objects.filter(
+                recipe=obj,
+                user=user.user
+            ).exists()
+        )
 
     def get_is_favorited(self, obj):
         return self.check_user_status(obj, Favorite)
