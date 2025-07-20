@@ -1,4 +1,4 @@
-from drf_spectacular.views import SpectacularSwaggerView
+
 from django.urls import include, path
 from rest_framework import routers
 
@@ -20,9 +20,4 @@ router.register(r'users', UserViewSet, basename='users')
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('djoser.urls.authtoken')),
-    path(
-        'docs/',
-        SpectacularSwaggerView.as_view(url_name='schema'),
-        name='swagger-ui'
-    ),
 ]
