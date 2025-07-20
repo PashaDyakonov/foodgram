@@ -70,7 +70,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeWriteSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user,)
+        serializer.save(author=self.request.user)
 
     @action(
         detail=False,
