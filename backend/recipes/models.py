@@ -160,18 +160,17 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
-        related_name='recipes',
         verbose_name='Теги',
         help_text='Выберите теги',
     )
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(constants.MIN_TIME_COOKING)],
         verbose_name='Время готовки',
-        help_text='Укажите время готовки.',
+        help_text='Укажите время готовки от {constants.MIN_TIME_COOKING} мин.',
     )
 
     class Meta:
-        ordering = ('-cooking_time',)
+        ordering = ('author',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -192,7 +191,7 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(
         Ingredients,
         on_delete=models.CASCADE,
-        related_name='recipe_ingredients',
+        related_name='recipe_ingredient',
         help_text='Укажите ингредиент',
         verbose_name='Ингредиент'
     )
@@ -211,7 +210,6 @@ class RecipeIngredient(models.Model):
     def __str__(self):
         return (f'{self.recipe.name} - {self.ingredient.name} -'
                 f'{self.amount} {self.ingredient.measurement_unit}')
-
 
 class Favorite(models.Model):
     """Модель для добавления в избранное."""
