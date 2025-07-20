@@ -170,7 +170,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     ingredients = RecipeIngredientsWriteSerializer(
         many=True,
-        allow_empty=False,
+        allow_empty=False
     )
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
@@ -188,7 +188,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
-            'recipe_ingredients',
+            'ingredients',
             'tags',
             'cooking_time'
         )
@@ -249,7 +249,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients_data = validated_data.pop('recipe_ingredients')
+        ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
         instance.tags.set(tags_data)
         instance.ingredients.clear()
