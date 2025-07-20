@@ -160,6 +160,7 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
+        related_name='tags',
         verbose_name='Теги',
         help_text='Выберите теги',
     )
@@ -211,6 +212,7 @@ class RecipeIngredient(models.Model):
         return (f'{self.recipe.name} - {self.ingredient.name} -'
                 f'{self.amount} {self.ingredient.measurement_unit}')
 
+
 class Favorite(models.Model):
     """Модель для добавления в избранное."""
 
@@ -224,7 +226,7 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorites',
+        related_name='favorites_recipes',
         help_text='Укажите рецепт, чтобы добавить в избранное',
         verbose_name='Избранное',
     )
@@ -256,7 +258,7 @@ class ShoppingList(models.Model):
     recipe = models.ManyToManyField(
         Recipe,
         verbose_name='Рецепты',
-        related_name='shopping_carts',
+        related_name='recipes_in_carts',
         help_text='Выберите рецепты для покупки ингридиентов',
     )
 
