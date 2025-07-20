@@ -19,6 +19,7 @@ from recipes.models import (
     ShoppingList,
     Tag,
 )
+from recipes.views import recipe_shortlink_redirect
 from api.services.shopping_list import generate_shopping_list_content
 from .filters import IngredientFilter, RecipeFilter
 from .permissions import IsAuthorOrReadOnly
@@ -70,7 +71,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeWriteSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(
+            author=self.request.user,
+            short_link=recipe_shortlink_redirect(Recipe)
+        )
 
     @action(
         detail=False,
