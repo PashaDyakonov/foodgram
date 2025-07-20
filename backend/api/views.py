@@ -63,7 +63,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     pagination_class = PageNumberPagination
     filterset_class = RecipeFilter
-    related_name = 'recipes'
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
