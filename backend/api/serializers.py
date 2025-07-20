@@ -180,6 +180,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     cooking_time = serializers.IntegerField(
         min_value=MIN_TIME_COOKING,
     )
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredients.objects.all(),
+        source='recipe_ingredients'
+    )
 
     class Meta:
         model = Recipe
