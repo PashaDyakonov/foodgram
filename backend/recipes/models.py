@@ -141,6 +141,7 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         max_length=constants.MAX_LENGTH_NAME_RECIPE,
+        related_name='recipes',
         verbose_name='Название рецепта',
         help_text='Введите название рецепта'
     )
@@ -155,7 +156,6 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredients,
-        related_name='recipes',
         verbose_name='Ингридиенты',
         help_text='Выберите ингридиенты для рецепта',
     )
