@@ -188,7 +188,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
-            'ingredients',
+            'recipe_ingredients',
             'tags',
             'cooking_time'
         )
