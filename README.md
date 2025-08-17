@@ -134,6 +134,6 @@
 
 Основные ссылки:
 
--  [Рабочий сервер](https://foodgrampc.hopto.org)
--  [Админ-панель](https://foodgrampc.hopto.org/admin)
--  [Документация API](https://foodgrampc.hopto.org/api/docs)
+-  [Рабочий сервер](https://foodgrampc1.hopto.org)
+-  [Админ-панель](https://foodgrampc1.hopto.org/admin)
+-  [Документация API](https://foodgrampc1.hopto.org/api/docs)
