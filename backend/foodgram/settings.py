@@ -11,19 +11,19 @@ DEBUG = False
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
 
 INSTALLED_APPS = [
+    'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'django_filters',
+    'djoser',
+    'drf_spectacular',
+    'recipes.apps.RecipesConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
-    'django_filters',
-    'recipes.apps.RecipesConfig',
-    'api.apps.ApiConfig',
-    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -85,7 +85,16 @@ SPECTACULAR_SETTINGS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+} if os.getenv('DB_ENGINE') == 'sqlite' else {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'django'),
+        'USER': os.getenv('POSTGRES_USER', 'django'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -151,3 +160,5 @@ LOGGING = {
         },
     },
 }
+
+AUTH_USER_MODEL = 'recipes.User'

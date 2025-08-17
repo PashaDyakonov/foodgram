@@ -40,7 +40,7 @@ class RecipeIngredientsWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для записи количества."""
 
     id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredients.objects.all(),
+        queryset=Ingredients.objects.all()
     )
     amount = serializers.IntegerField(min_value=INGREDIENT_AMOUNT_MIN)
 
@@ -52,7 +52,7 @@ class RecipeIngredientsWriteSerializer(serializers.ModelSerializer):
 class RecipeIngredientReadSerializer(serializers.ModelSerializer):
     """Сериализатор для чтения с полем amount."""
 
-    id = serializers.ReadOnlyField(source='ingredient')
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredients.objects.all())
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
@@ -74,8 +74,9 @@ class UserSerializer(DjoserUserSerializer):
 
     def get_is_subscribed(self, user):
         request = self.context.get('request')
-        return user.followers.filter(
-            user=request.user).exists() if request else False
+        if not request or not request.user.is_authenticated:
+            return False
+        return request.user.followers.filter(author=user).exists()
 
 
 class AvatarSerializer(serializers.ModelSerializer):
