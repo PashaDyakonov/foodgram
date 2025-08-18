@@ -31,10 +31,9 @@ services:
     ports:
       - 8000:80
     volumes:
-      - ../frontend/build:/usr/share/nginx/html/
+      - static:/staticfiles/
+      - media:/app/media
       - ../docs/:/usr/share/nginx/html/api/docs/
-      - static:/usr/share/nginx/html/static
-      - media:/usr/share/nginx/html/media
     depends_on:
       - backend
       - frontend

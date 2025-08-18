@@ -1,6 +1,5 @@
 
 from django.urls import include, path
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework import routers
 
 from api.views import (
@@ -17,7 +16,6 @@ router.register(r'tags', TagViewSet)
 router.register(r'ingredients', IngredientsViewSet)
 router.register(r'recipes', RecipeViewSet)
 router.register(r'users', UserViewSet, basename='users')
-app_name = 'api'
 
 urlpatterns = [
     path('', include(router.urls)),
