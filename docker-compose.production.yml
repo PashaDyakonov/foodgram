@@ -17,7 +17,6 @@ services:
     volumes:
       - static:/backend_static
       - media:/app/media
-      - /home/yc-user/foodgram/data:/app/data
     depends_on:
       - db
   frontend:
