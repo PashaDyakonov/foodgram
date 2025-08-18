@@ -17,6 +17,7 @@ services:
     volumes:
       - static:/backend_static
       - media:/app/media
+      - /home/yc-user/foodgram/data:/app/data
     depends_on:
       - db
   frontend:
@@ -31,8 +32,10 @@ services:
     ports:
       - 8000:80
     volumes:
-      - static:/staticfiles/
-      - media:/app/media
+      - ../frontend/build:/usr/share/nginx/html/
+      - ../docs/:/usr/share/nginx/html/api/docs/
+      - static:/usr/share/nginx/html/static
+      - media:/usr/share/nginx/html/media
     depends_on:
       - backend
       - frontend
