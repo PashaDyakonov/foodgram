@@ -35,7 +35,7 @@ class TagAdmin(admin.ModelAdmin):
     @admin.display(description='Количество рецептов с этим тэгом')
     def count_recipes(self, tag):
         """Возвращает количество рецептов для тега."""
-        return tag.recipes.count()
+        return tag.recipe.count()
 
 
 @admin.register(Ingredients)
@@ -54,7 +54,7 @@ class IngredientAdmin(admin.ModelAdmin):
     @admin.display(description='Количество рецептов с этим ингредиентом')
     def count_recipes(self, recipe):
         """Количество рецептов, использующих этот ингредиент."""
-        return recipe.recipe_ingredients.count()
+        return recipe.recipes.count()
 
 
 @admin.register(Recipe)

@@ -78,7 +78,7 @@ class Follow(models.Model):
 
     def __str__(self):
         """Возвращает строковое представление подписки."""
-        return f'{self.user.username} - {self.following.username}'
+        return f'{self.user.username} - {self.author.username}'
 
 
 class Tag(models.Model):
@@ -155,12 +155,13 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredients,
+        related_name='recipes',
         verbose_name='Ингридиенты',
         help_text='Выберите ингридиенты для рецепта',
     )
     tags = models.ManyToManyField(
         Tag,
-        related_name='tags',
+        related_name='recipe',
         verbose_name='Теги',
         help_text='Выберите теги',
     )
@@ -226,7 +227,7 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorites_recipes',
+        related_name='favorites',
         help_text='Укажите рецепт, чтобы добавить в избранное',
         verbose_name='Избранное',
     )

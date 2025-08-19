@@ -1,16 +1,18 @@
 from datetime import datetime
 
+from recipes.models import ShoppingList
+
 
 def generate_shopping_list_content(user):
     recipes_info = []
     ingredients_info = {}
 
-    for recipe in user.shoppers.latest('created_at').recipe.select_related(
-        'author'
-    ).prefetch_related('ingredients'):
+    for recipe in ShoppingList.objects.get(
+        user=user).recipe.select_related(
+            'author').prefetch_related('ingredients'):
         recipes_info.append(f'{recipe.name} (автор: {recipe.author.username})')
 
-        for ingredient in recipe.ingredients.all():
+        for ingredient in recipe.recipe_ingredients.all():
             key = (
                 ingredient.name.lower(), ingredient.measurement_unit.lower()
             )

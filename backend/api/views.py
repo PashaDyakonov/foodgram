@@ -230,35 +230,40 @@ class UserViewSet(DjoserUserViewSet):
         url_path='subscribe',
         permission_classes=[IsAuthenticated]
     )
-    def subscribe(self, request, pk=None):
+    def subscribe(self, request, id=None):
         """Управление подпиской на пользователя с валидацией."""
         user = request.user
+        author_id = id
 
         if request.method == 'DELETE':
             get_object_or_404(
                 Follow,
                 user=user,
-                following_id=pk).delete()
+                author_id=author_id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        following = get_object_or_404(User, id=pk)
 
-        if user == following:
+        author = get_object_or_404(User, id=author_id)
+
+        if user == author:
             return Response(
                 {'error': 'Нельзя подписаться на самого себя'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
         _, created = Follow.objects.get_or_create(
             user=user,
-            following=following,
-            defaults={'user': user, 'following': following}
+            author=author,
+            defaults={'user': user, 'author': author}
         )
+
         if not created:
             return Response(
-                {'error': f'Вы уже подписаны на {following.username}'},
+                {'error': f'Вы уже подписаны на {author.username}'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
         serializer = FollowUserSerializer(
-            _.following,
+            author,
             context={'request': request}
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
