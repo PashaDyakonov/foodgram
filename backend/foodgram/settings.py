@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
 
@@ -73,17 +73,16 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
-#} if os.getenv('DB_ENGINE') == 'sqlite' else {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': os.getenv('POSTGRES_DB', 'django'),
-#        'USER': os.getenv('POSTGRES_USER', 'django'),
-#        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
-#        'HOST': os.getenv('DB_HOST', ''),
-#        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+} if os.getenv('DB_ENGINE') == 'sqlite' else {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'django'),
+        'USER': os.getenv('POSTGRES_USER', 'django'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
