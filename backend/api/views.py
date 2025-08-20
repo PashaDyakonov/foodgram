@@ -90,7 +90,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
         return response
 
-    @action(detail=True, methods=['get'], url_path='short-link')
+    @action(detail=True, methods=['get'], url_path='get-link')
     def generate_short_link(self, request, pk=None):
         """Генерация короткой ссылки."""
         return Response(
@@ -153,7 +153,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=['post', 'delete', 'get'],
         url_path='shopping_cart',
         permission_classes=[IsAuthenticated],
     )
