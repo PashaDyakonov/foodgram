@@ -35,7 +35,7 @@ class TagAdmin(admin.ModelAdmin):
     @admin.display(description='Количество рецептов с этим тэгом')
     def count_recipes(self, tag):
         """Возвращает количество рецептов для тега."""
-        return tag.recipe.count()
+        return tag.recipes.count()
 
 
 @admin.register(Ingredients)
@@ -127,7 +127,13 @@ class FavoriteAdmin(admin.ModelAdmin):
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     """Настройка админки для модели User."""
-
+    fieldsets = BaseUserAdmin.fieldsets + (
+        ('Дополнительно', {
+            'fields': (
+                'avatar',
+            )
+        }),
+    )
     list_display = (
         'pk',
         'username',
@@ -167,14 +173,14 @@ class UserAdmin(BaseUserAdmin):
         """Количество рецептов пользователя."""
         return user.recipes.count()
 
-    @admin.display(description='Количество подписок пользователя')
+    @admin.display(description='Подписок')
     def following_count(self, user):
-        """Количество пользователей, на которых подписан пользователь."""
+        """Подписок."""
         return user.followers.count()
 
-    @admin.display(description='Количество подписчиков')
+    @admin.display(description='Подписчиков')
     def followers_count(self, user):
-        """Количество подписчиков пользователя."""
+        """Подписчиков."""
         return user.authors.count()
 
     @admin.display(description='ID')

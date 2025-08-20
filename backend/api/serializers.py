@@ -52,7 +52,7 @@ class RecipeIngredientsWriteSerializer(serializers.ModelSerializer):
 class RecipeIngredientReadSerializer(serializers.ModelSerializer):
     """Сериализатор для чтения с полем amount."""
 
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredients.objects.all())
+    id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
@@ -109,17 +109,11 @@ class FollowUserSerializer(UserSerializer):
         fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count')
 
     def get_recipes(self, author):
-        recipes = author.recipes.all()
-        if recipes_limit := self.context['request'].GET.get('recipes_limit'):
-            return ShortRecipeSerializer(
-                recipes[:int(recipes_limit)],
-                many=True,
-                context=self.context
-            ).data
-        return ShortRecipeSerializer(
-            recipes,
-            many=True,
-            context=self.context).data
+        recipes = Recipe.objects.filter(author=author)
+        if 'recipes_limit' in self.context.get('request').GET:
+            limit = int(self.context['request'].GET['recipes_limit'])
+            recipes = recipes[:limit]
+        return ShortRecipeSerializer(recipes, many=True).data
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):

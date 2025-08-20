@@ -37,6 +37,7 @@ class User(AbstractUser):
     avatar = models.ImageField(
         upload_to='users/avatars/',
         verbose_name='Аватар',
+        default=None,
         help_text='Загрузите аватара'
     )
 
@@ -161,7 +162,7 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
-        related_name='recipe',
+        related_name='recipes',
         verbose_name='Теги',
         help_text='Выберите теги',
     )
@@ -256,10 +257,11 @@ class ShoppingList(models.Model):
         verbose_name='Покупатель',
         help_text='Укажите покупателя',
     )
-    recipe = models.ManyToManyField(
+    recipe = models.ForeignKey(
         Recipe,
         verbose_name='Рецепты',
-        related_name='recipes_in_carts',
+        on_delete=models.CASCADE,
+        related_name='shopping_carts',
         help_text='Выберите рецепты для покупки ингридиентов',
     )
 
@@ -269,7 +271,7 @@ class ShoppingList(models.Model):
         verbose_name_plural = 'Списки покупок'
         constraints = [
             models.UniqueConstraint(
-                fields=['user'],
+                fields=['user', 'recipe'],
                 name='unique_shopping_list'
             )
         ]

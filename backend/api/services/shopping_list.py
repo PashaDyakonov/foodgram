@@ -7,9 +7,9 @@ def generate_shopping_list_content(user):
     recipes_info = []
     ingredients_info = {}
 
-    for recipe in ShoppingList.objects.get(
-        user=user).recipe.select_related(
-            'author').prefetch_related('ingredients'):
+    for recipe in ShoppingList.objects.filter(user=user).select_related(
+        'recipe__author'
+    ):
         recipes_info.append(f'{recipe.name} (автор: {recipe.author.username})')
 
         for ingredient in recipe.recipe_ingredients.all():

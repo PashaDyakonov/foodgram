@@ -107,6 +107,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer_class = ShortRecipeSerializer
             relation_field = 'recipe'
             model_name = 'избранное'
+            return Response(serializer_class.data,
+                            status=status.HTTP_204_NO_CONTENT)
         elif model_class == ShoppingList:
             serializer_class = ShortRecipeSerializer
             relation_field = 'recipe'
