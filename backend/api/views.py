@@ -90,11 +90,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
         return response
 
-    @action(detail=True, methods=['get'], url_path='shortlink')
+    @action(detail=True, methods=['get'], url_path='short-link')
     def generate_short_link(self, request, pk=None):
         """Генерация короткой ссылки."""
         return Response(
-            {'short_link': request.build_absolute_uri(
+            {'short-link': request.build_absolute_uri(
                 reverse('recipe-shortlink', kwargs={'pk': pk}))},
             status=status.HTTP_200_OK
         )
@@ -107,14 +107,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer_class = ShortRecipeSerializer
             relation_field = 'recipe'
             model_name = 'избранное'
-            return Response(serializer_class.data,
-                            status=status.HTTP_204_NO_CONTENT)
         elif model_class == ShoppingList:
             serializer_class = ShortRecipeSerializer
             relation_field = 'recipe'
             model_name = 'список покупок'
         if request.method == 'DELETE':
             relation = get_object_or_404(
+                Favorite,
                 user=user,
                 **{relation_field: pk}
             )
