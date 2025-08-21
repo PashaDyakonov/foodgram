@@ -16,6 +16,7 @@ router.register(r'tags', TagViewSet)
 router.register(r'ingredients', IngredientsViewSet)
 router.register(r'recipes', RecipeViewSet)
 router.register(r'users', UserViewSet, basename='users')
+app_name = 'api'
 
 urlpatterns = [
     path('', include(router.urls)),

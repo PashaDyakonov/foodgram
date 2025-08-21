@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.http import FileResponse
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -91,18 +91,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return response
 
     @action(detail=True, methods=['get'], url_path='get-link')
-    def generate_short_link(self, request, pk=None):
-        """Генерация короткой ссылки."""
-        return Response(
-            {'short-link': request.build_absolute_uri(
-                reverse('recipe-shortlink', kwargs={'pk': pk}))},
-            status=status.HTTP_200_OK
-        )
+    def get_link(self, request, pk=None):
+        exists = Recipe.objects.filter(id=pk).exists()
+        if not exists:
+            raise Http404(f'Рецепт с id={pk} не найден')
+        short_path = reverse(
+            'recipes:recipe-short-link', kwargs={'recipe_id': pk})
+        absolute_url = request.build_absolute_uri(short_path)
+
+        return Response({'short-link': absolute_url})
 
     def _manage_related_model(
             self, request, pk, model_class):
         """Общий метод для управления избранным и списком покупок."""
         user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
         if model_class == Favorite:
             serializer_class = ShortRecipeSerializer
             relation_field = 'recipe'
@@ -120,7 +123,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             relation.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-        recipe = get_object_or_404(Recipe, id=pk)
         _, created = model_class.objects.get_or_create(
             user=user,
             **{relation_field: recipe}
@@ -153,7 +155,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['post', 'delete', 'get'],
+        methods=['post', 'delete'],
         url_path='shopping_cart',
         permission_classes=[IsAuthenticated],
     )
