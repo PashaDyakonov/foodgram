@@ -15,6 +15,7 @@ def generate_shopping_list_content(user):
         recipe_ingredients = RecipeIngredient.objects.filter(
             recipe=recipe
         ).select_related('ingredient')
+
         for recipe_ingredient in recipe_ingredients:
             ingredient = recipe_ingredient.ingredient
             key = (ingredient.name.lower(),
