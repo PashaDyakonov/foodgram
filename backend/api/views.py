@@ -218,7 +218,7 @@ class UserViewSet(DjoserUserViewSet):
             FollowUserSerializer(
                 self.paginate_queryset(
                     User.objects.filter(
-                        id__in=request.user.follower.select_related(
+                        id__in=request.user.followers.select_related(
                             'following').values_list(
                                 'following',
                                 flat=True)).prefetch_related(

@@ -1,11 +1,5 @@
 from datetime import datetime
 
-from recipes.models import ShoppingList
-
-
-from datetime import datetime
-from collections import defaultdict
-
 from recipes.models import ShoppingList, RecipeIngredient
 
 
@@ -23,7 +17,8 @@ def generate_shopping_list_content(user):
         ).select_related('ingredient')
         for recipe_ingredient in recipe_ingredients:
             ingredient = recipe_ingredient.ingredient
-            key = (ingredient.name.lower(), ingredient.measurement_unit.lower())
+            key = (ingredient.name.lower(),
+                   ingredient.measurement_unit.lower())
             if key not in ingredients_info:
                 ingredients_info[key] = {
                     'name': ingredient.name.capitalize(),
