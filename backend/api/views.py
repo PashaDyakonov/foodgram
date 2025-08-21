@@ -117,9 +117,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             model_name = 'список покупок'
         if request.method == 'DELETE':
             relation = get_object_or_404(
-                Favorite,
+                model_class,
                 user=user,
-                **{relation_field: pk}
+                **{relation_field: recipe}
             )
             relation.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
