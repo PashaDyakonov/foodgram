@@ -57,7 +57,6 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
     )
-    amount = serializers.IntegerField()
 
     class Meta:
         model = RecipeIngredient
@@ -110,7 +109,7 @@ class FollowUserSerializer(UserSerializer):
         fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count')
 
     def get_recipes(self, author):
-        recipes = Recipe.objects.filter(author=author)
+        recipes = author.recipes.all()
         if 'recipes_limit' in self.context.get('request').GET:
             limit = int(self.context['request'].GET['recipes_limit'])
             recipes = recipes[:limit]

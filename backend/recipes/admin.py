@@ -32,10 +32,17 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ('name', 'slug',)
     prepopulated_fields = {'slug': ('name',)}
 
-    @admin.display(description='Количество рецептов с этим тэгом')
+    @admin.display(description='Рецептов')
     def count_recipes(self, tag):
         """Возвращает количество рецептов для тега."""
         return tag.recipes.count()
+
+
+class IngredientAmountInline(admin.TabularInline):
+    model = RecipeIngredient
+    extra = 1
+    fields = ('ingredient', 'amount')
+    autocomplete_fields = ['ingredient']
 
 
 @admin.register(Ingredients)
@@ -51,16 +58,17 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', 'measurement_unit')
     list_filter = ('measurement_unit',)
 
-    @admin.display(description='Количество рецептов с этим ингредиентом')
+    @admin.display(description='Рецептов')
     def count_recipes(self, recipe):
         """Количество рецептов, использующих этот ингредиент."""
-        return recipe.recipes.count()
+        return recipe.recipe_ingredient.count()
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     """Настройка админки для модели Recipe."""
 
+    inlines = [IngredientAmountInline]
     list_display = (
         'id',
         'name',
@@ -71,21 +79,33 @@ class RecipeAdmin(admin.ModelAdmin):
         'tags_list',
         'image_preview',
     )
-    search_fields = ('name', 'tags', 'author')
-    list_filter = ('author', 'tags', 'cooking_time')
+    search_fields = ('name__icontains', 'tags', 'author__username__icontains')
+    list_filter = ('author__username', 'tags', 'cooking_time')
     readonly_fields = ('image_preview',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('author', 'name', 'text')
+        }),
+        ('Изображение', {
+            'fields': ('image', 'image_preview')
+        }),
+        ('Детали рецепта', {
+            'fields': ('ingredients', 'tags', 'cooking_time')
+        }),
+    )
 
     @admin.display(description='Автор')
     def get_author_username(self, recipe):
         """Возвращает username автора вместо User object."""
         return recipe.author.username
 
-    @admin.display(description='Количество добавлений в избранное')
+    @admin.display(description='В избранном')
     def favorites_count(self, recipe):
         """Количество добавлений в избранное."""
         return recipe.favorites.count()
 
-    @admin.display(description='Список ингредиентов')
+    @admin.display(description='Ингредиенты')
     @mark_safe
     def ingredients_list(self, recipe):
         return '<br>'.join(
@@ -93,7 +113,7 @@ class RecipeAdmin(admin.ModelAdmin):
             for i in recipe.recipe_ingredients.all()
         )
 
-    @admin.display(description='Список тэгов')
+    @admin.display(description='Теги')
     @mark_safe
     def tags_list(self, recipe):
         """Список тегов с HTML-разметкой."""
@@ -110,6 +130,15 @@ class RecipeAdmin(admin.ModelAdmin):
                 f'max-width: 100px;" />'
             )
         return 'Нет изображения'
+
+    @admin.display(description='Ингредиенты', ordering='ingredients__name')
+    def get_ingredients(self, recipe):
+        ingredients_list = [
+            f'- {ing.ingredient.name} '
+            f'({ing.amount} {ing.ingredient.measurement_unit})'
+            for ing in recipe.recipe_amounts.select_related('ingredient').all()
+        ]
+        return mark_safe('<br>'.join(ingredients_list))
 
 
 @admin.register(Favorite)

@@ -85,45 +85,42 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
-        content = generate_shopping_list_content(request.user)
-        response = FileResponse(content, content_type='text/plain')
-        response[
-            'Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
-        return response
+        return FileResponse(
+            generate_shopping_list_content(request.user),
+            content_type='text/plain',
+            headers={
+                'Content-Disposition':
+                    'attachment; filename="shopping_list.txt"'
+            }
+        )
 
     @action(detail=True, methods=['get'], url_path='get-link')
     def get_link(self, request, pk=None):
-        exists = Recipe.objects.filter(id=pk).exists()
-        if not exists:
+        if not Recipe.objects.filter(id=pk).exists():
             raise Http404(f'Рецепт с id={pk} не найден')
-        short_path = reverse(
-            'recipes:recipe-short-link', kwargs={'recipe_id': pk})
-        absolute_url = request.build_absolute_uri(short_path)
-
-        return Response({'short-link': absolute_url})
+        return Response(
+            {
+                'short-link': request.build_absolute_uri(
+                    reverse('recipes:recipe-short-link',
+                            args=[pk])
+                )
+            }
+        )
 
     def _manage_related_model(
             self, request, pk, model_class):
         """Общий метод для управления избранным и списком покупок."""
         user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
-        if model_class == Favorite:
-            serializer_class = ShortRecipeSerializer
-            relation_field = 'recipe'
-            model_name = 'избранное'
-        elif model_class == ShoppingList:
-            serializer_class = ShortRecipeSerializer
-            relation_field = 'recipe'
-            model_name = 'список покупок'
+        model_name = model_class._meta.verbose_name.lower()
+        serializer_class = ShortRecipeSerializer
+        relation_field = 'recipe'
         if request.method == 'DELETE':
-            relation = get_object_or_404(
-                model_class,
-                user=user,
-                **{relation_field: recipe}
-            )
-            relation.delete()
+            get_object_or_404(model_class,
+                              user=user,
+                              **{f'{relation_field}__id': pk}).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+        recipe = get_object_or_404(Recipe, id=pk)
         _, created = model_class.objects.get_or_create(
             user=user,
             **{relation_field: recipe}
@@ -131,8 +128,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if not created:
             raise ValidationError(
-                {'error': f'Рецепт "{recipe.name}" уже есть в {model_name}'},
-                code=status.HTTP_400_BAD_REQUEST
+                {'error': f'Рецепт "{recipe.name}" уже есть в {model_name}'}
             )
 
         return Response(
@@ -218,11 +214,7 @@ class UserViewSet(DjoserUserViewSet):
             FollowUserSerializer(
                 self.paginate_queryset(
                     User.objects.filter(
-                        id__in=request.user.followers.select_related(
-                            'following').values_list(
-                                'following',
-                                flat=True)).prefetch_related(
-                                    'recipes')
+                        authors__user=request.user).prefetch_related('recipes')
                 ),
                 many=True,
                 context={'request': request}).data
@@ -257,7 +249,6 @@ class UserViewSet(DjoserUserViewSet):
         _, created = Follow.objects.get_or_create(
             user=user,
             author=author,
-            defaults={'user': user, 'author': author}
         )
 
         if not created:
@@ -265,9 +256,10 @@ class UserViewSet(DjoserUserViewSet):
                 {'error': f'Вы уже подписаны на {author.username}'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        serializer = FollowUserSerializer(
-            author,
-            context={'request': request}
+        return Response(
+            FollowUserSerializer(
+                author,
+                context={'request': request}
+            ).data,
+            status=status.HTTP_201_CREATED
         )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)

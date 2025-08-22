@@ -35,18 +35,21 @@ def generate_shopping_list_content(user):
         ingredients_info.values(),
         key=lambda x: x['name']
     )
-    current_time = datetime.now().strftime('%d.%m.%Y %H:%M')
+    current_time = datetime.now().strftime('%d %B %Y')
     content_lines = [
         f'Список покупок ({current_time})',
         '\nНеобходимые ингредиенты:',
     ]
-    for index, item in enumerate(sorted_ingredients, 1):
-        content_lines.append(
-            f'{index}. {item["name"]} - {item["amount"]} {item["unit"]}')
+    content_lines += [
+        f'{index}. {item["name"]} - {item["amount"]} {item["unit"]}'
+        for index, item in enumerate(sorted_ingredients, 1)
+    ]
     content_lines.extend([
         '\nРецепты:',
     ])
-    for index, recipe_info in enumerate(recipes_info, 1):
-        content_lines.append(f'{index}. {recipe_info}')
+    content_lines += [
+        f'{index}. {recipe_info}'
+        for index, recipe_info in enumerate(recipes_info, 1)
+    ]
     content_lines.append('\nПриятного приготовления!')
     return '\n'.join(content_lines)

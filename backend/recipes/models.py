@@ -94,7 +94,7 @@ class Tag(models.Model):
     slug = models.SlugField(
         unique=True,
         max_length=32,
-        verbose_name='Уникальный идентификатор (slug)',
+        verbose_name='Идентификатор',
         help_text='Введите URL-адрес'
     )
 
@@ -142,7 +142,7 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         max_length=constants.MAX_LENGTH_NAME_RECIPE,
-        verbose_name='Название рецепта',
+        verbose_name='Название',
         help_text='Введите название рецепта'
     )
     image = models.ImageField(
@@ -198,9 +198,8 @@ class RecipeIngredient(models.Model):
         help_text='Укажите ингредиент',
         verbose_name='Ингредиент'
     )
-    amount = models.CharField(
+    amount = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(constants.INGREDIENT_AMOUNT_MIN)],
-        max_length=10,
         help_text='Укажите количество',
         verbose_name='Количество'
     )
