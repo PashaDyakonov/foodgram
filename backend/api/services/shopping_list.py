@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from recipes.models import ShoppingList, RecipeIngredient
 
@@ -22,22 +22,25 @@ def generate_shopping_list_content(user):
                    ingredient.measurement_unit.lower())
             if key not in ingredients_info:
                 ingredients_info[key] = {
-                    'name': ingredient.name.capitalize(),
+                    'name': ingredient.name,
                     'unit': ingredient.measurement_unit,
                     'amount': 0
                 }
-            try:
-                amount = float(recipe_ingredient.amount)
-            except (ValueError, TypeError):
-                amount = 0
+            amount = recipe_ingredient.amount
             ingredients_info[key]['amount'] += amount
     sorted_ingredients = sorted(
         ingredients_info.values(),
         key=lambda x: x['name']
     )
-    current_time = datetime.now().strftime('%d %B %Y')
+    today = date.today()
+    months = {
+        1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля',
+        5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа',
+        9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'
+    }
+    formatted_date = f'{today.day} {months[today.month]} {today.year} года'
     content_lines = [
-        f'Список покупок ({current_time})',
+        f'Список покупок ({formatted_date})',
         '\nНеобходимые ингредиенты:',
     ]
     content_lines += [

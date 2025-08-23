@@ -79,8 +79,8 @@ class RecipeAdmin(admin.ModelAdmin):
         'tags_list',
         'image_preview',
     )
-    search_fields = ('name__icontains', 'tags', 'author__username__icontains')
-    list_filter = ('author__username', 'tags', 'cooking_time')
+    list_filter = ('author__username', 'tags')
+    search_fields = ('name__icontains', 'tags', 'author__username')
     readonly_fields = ('image_preview',)
 
     fieldsets = (
@@ -176,6 +176,9 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('username', 'email', 'first_name', 'last_name')
     list_filter = ('is_active', 'is_staff', 'is_superuser')
     readonly_fields = ('avatar_preview',)
+
+    def username(self, obj):
+        return obj.username
 
     @admin.display(description='Аватар')
     @mark_safe

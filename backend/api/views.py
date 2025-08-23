@@ -107,26 +107,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
             }
         )
 
-    def _manage_related_model(
-            self, request, pk, model_class):
+    def _manage_related_model(self, request, pk, model_class):
         """Общий метод для управления избранным и списком покупок."""
         user = request.user
-        model_name = model_class._meta.verbose_name.lower()
         serializer_class = ShortRecipeSerializer
-        relation_field = 'recipe'
+
         if request.method == 'DELETE':
             get_object_or_404(model_class,
                               user=user,
-                              **{f'{relation_field}__id': pk}).delete()
+                              recipe__id=pk).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         recipe = get_object_or_404(Recipe, id=pk)
         _, created = model_class.objects.get_or_create(
             user=user,
-            **{relation_field: recipe}
+            recipe=recipe
         )
 
         if not created:
+            model_name = model_class._meta.verbose_name.lower()
             raise ValidationError(
                 {'error': f'Рецепт "{recipe.name}" уже есть в {model_name}'}
             )
